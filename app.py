@@ -99,4 +99,4 @@ def get_image():
     return send_file('resized_image.jpg', mimetype='image/jpeg')
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run(debug=False)
