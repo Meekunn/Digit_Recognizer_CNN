@@ -5,10 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	const ctx = canvas.getContext('2d');
 	ctx.lineWidth = 20;
 	thickness = 30;
-	// ctx.lineHeight = 20;
 
 	let isDrawing = false;
-	let isErasing = false;
 
 	canvas.addEventListener('mousedown', startDrawing);
 	canvas.addEventListener('mousemove', draw);
@@ -33,26 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	function stopDrawing() {
 		isDrawing = false;
-	}
-
-	function startErasing(e) {
-		isErasing = true;
-		erase(e);
-	}
-
-	function erase(e) {
-		if (!isDrawing) return;
-		ctx.globalCompositeOperation = 'destination-out'; // Set composite mode to erase
-		ctx.beginPath();
-		ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Transparent color to erase
-		ctx.fillRect(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, thickness, thickness); // Adjust the size as needed
-		ctx.stroke();
-		ctx.closePath();
-		ctx.globalCompositeOperation = 'source-over'; // Reset composite mode
-	}
-
-	function stopErasing() {
-		isErasing = false;
 	}
 
 	function clearCanvas() {
@@ -88,44 +66,45 @@ document.addEventListener('DOMContentLoaded', function () {
 			method: 'POST',
 			body: formData,
 		})
-		.then(response => response.clone().json())
-		.then((data) => {
-			// Display the image preview below
-			const previewContainer = document.querySelector('.preview');
-            const image = new Image();
-            image.onload = function() {
-                const aspectRatio = this.width / this.height;
-                const containerAspectRatio = previewContainer.offsetWidth / previewContainer.offsetHeight;
-                if (aspectRatio > containerAspectRatio) {
-                    this.style.width = '100%';
-                    this.style.height = 'auto';
-                } else {
-                    this.style.width = 'auto';
-                    this.style.height = '100%';
-                }
-            };
-            image.src = '/get_image?' + new Date().getTime();
-			previewContainer.innerHTML = ''; // Clear previous image
-            previewContainer.appendChild(image);
+			.then((response) => response.clone().json())
+			.then((data) => {
+				// Display the image preview below
+				const previewContainer = document.querySelector('.preview');
+				const image = new Image();
+				image.onload = function () {
+					const aspectRatio = this.width / this.height;
+					const containerAspectRatio = previewContainer.offsetWidth / previewContainer.offsetHeight;
+					if (aspectRatio > containerAspectRatio) {
+						this.style.width = '100%';
+						this.style.height = 'auto';
+					} else {
+						this.style.width = 'auto';
+						this.style.height = '100%';
+					}
+				};
+				image.src = '/get_image?' + new Date().getTime();
+				previewContainer.innerHTML = ''; // Clear previous image
+				previewContainer.appendChild(image);
 
-			// Predictions
-			console.log('Server response:', data);
-			let pred = data.prediction;
-			//console.log(pred);
-			
-			// Update the guesses in the GUI with the new predictions
-			const guesses = document.querySelectorAll('.each-guess span');
-			guesses.forEach((guess, index) => {
-				guess.textContent = pred[index];
-			});		
-			
-		})
-		.catch((error) => {
-			console.error('Error sending image:', error);
-		});
+				// Predictions
+				console.log('Server response:', data);
+				let pred = data.prediction;
+				let prob = data.probability;
+				//console.log(pred);
+
+				// Update the guesses in the GUI with the new predictions
+				const guesses = document.querySelectorAll('.each-guess');
+				const guessLabels = ['First Guess', 'Second Guess', 'Third Guess'];
+				guesses.forEach((guess, index) => {
+					const span = guess.querySelector('span');
+					const paragraph = guess.querySelector('p');
+					span.textContent = pred[index];
+					const guessLabel = guessLabels[index];
+					paragraph.textContent = `${guessLabel}: (${(prob[index] * 100).toFixed(2)}%):`;
+				});
+			})
+			.catch((error) => {
+				console.error('Error sending image:', error);
+			});
 	}
-
-	canvas.addEventListener('mousedown', startErasing);
-	canvas.addEventListener('mousemove', erase);
-	canvas.addEventListener('mouseup', stopErasing);
 });
