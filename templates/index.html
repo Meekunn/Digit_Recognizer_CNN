@@ -11,7 +11,7 @@
 		<script src="https://kit.fontawesome.com/781571eb05.js" crossorigin="anonymous"></script>
 
 		<link rel="stylesheet" href="./static/css/index.css" />
-		<title>ANN Digit Recognizer</title>
+		<title>CNN Digit Recognizer</title>
 	</head>
 	<body>
 		<header>
@@ -25,33 +25,26 @@
 					<button class="image-button clear" id="clear-btn">
 						<img src="../static/icons/icons8-cancel-100.svg" alt="cancel button" />
 					</button>
-					<!-- <button class="image-button" id="erase-btn">
-						<img src="../static/icons/icons8-eraser-64.png" alt="erase button" />
-					</button> -->
 					<button class="image-button send" id="send-btn">Predict</button>
 				</div>
 			</div>
 			<div class="preview-container">
 				<p>Preview the 28x28 image of the digit</p>
 				<div class="preview"></div>
-				<!-- <div class="button-wrapper">
-					<button class="preview-btn cancel" id="clear-btn">Cancel</button>
-					<button class="preview-btn predict" id="send-btn">Predict</button>
-				</div> -->
 			</div>
 			<div class="prediction-container">
 				<p>Predictions & Accuracy</p>
 				<div class="guesses">
 					<div class="each-guess">
-						<p>First Guess (98.00%):</p>
+						<p>First Guess</p>
 						<span></span>
 					</div>
 					<div class="each-guess">
-						<p>Second Guess (87.67%):</p>
+						<p>Second Guess</p>
 						<span></span>
 					</div>
 					<div class="each-guess">
-						<p>Third Guess (67.12%):</p>
+						<p>Third Guess</p>
 						<span></span>
 					</div>
 				</div>

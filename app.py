@@ -78,15 +78,17 @@ def process_image():
 		'''
 		prediction = new_model.predict(model_input)
 
-		print('predict', prediction)
-
 		# Assuming prediction is a one-hot encoded output, you might want to get the predicted class
 		top_3_indices = np.argsort(prediction)[::-1][:3]
 		predicted_class = list(reversed(top_3_indices[0]))
 		res = predicted_class[:3]
 		print(res)
 
-		return json.dumps({'result': 'Image received and processed successfully!', 'prediction': [int(res[0]), int(res[1]), int(res[2])]})
+		first_guess, second_guess, third_guess =  int(res[0]), int(res[1]), int(res[2])
+		prediction = prediction[0]
+		print(prediction)
+		p1, p2, p3 = float(prediction[first_guess]), float(prediction[second_guess]), float(prediction[third_guess])
+		return json.dumps({'result': 'Image received and processed successfully!', 'prediction': [first_guess, second_guess, third_guess], 'probability':[p1, p2, p3]})
 	else: 
 		print("No image received!")
 		response = {"result": "No image received!"}
